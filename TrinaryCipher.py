@@ -1,18 +1,23 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# 作者：伍耀晖	Author: YaoHui.Wu
-# 开源日期：2022年5月27日	Open Source Date: 2022-5-27
-# 国家：中国	Country: China
+#*******************************************************
+# 作者：伍耀晖             Author: YaoHui.Wu           *
+# 开源日期：2022年5月27日  Open Source Date: 2022-5-27 *
+# 国家：中国               Country: China              *
+#*******************************************************
 
 import sys
 
-def Ternary(iNumeric, iRadix):
+def Usage():
+    print("Usage\n\tEncryption: python TrinaryCipher.py -e/-E Plaintext.file Ciphertext.file Password\n\tDecryption: python TrinaryCipher.py -d/-D Ciphertext.file Plaintext.file Password")
+
+def Ternary(iNumeric):
     i, lTrinary = 0, [0, 0, 0, 0, 0, 0]
 
     if iNumeric and i < 6:
         while iNumeric:
-            iNumeric, iRemainder = divmod(iNumeric, iRadix)
+            iNumeric, iRemainder = divmod(iNumeric, 3)
 
             lTrinary[i] = iRemainder
 
@@ -20,87 +25,79 @@ def Ternary(iNumeric, iRadix):
 
     return lTrinary
 
+# 0 ? 2    0 1 2
+# 1 1 1 or ? 1 ?
+# 2 ? 0    2 1 0
+
+def TernaryXor(lTrinary, lPassword):
+    strTrinary = ""
+
+    for l in range(6):
+       if lTrinary[l] == lPassword[l] == 0: strTrinary += "0"
+
+       elif lTrinary[l] == 0 and lPassword[l] == 1: strTrinary += "2"
+
+       elif lTrinary[l] == 0 and lPassword[l] == 2: strTrinary += "2"
+
+       elif lTrinary[l] == 1 and lPassword[l] == 0: strTrinary += "1"
+
+       elif lTrinary[l] == lPassword[l] == 1: strTrinary += "1"
+
+       elif lTrinary[l] == 1 and lPassword[l] == 2: strTrinary += "1"
+
+       elif lTrinary[l] == 2 and lPassword[l] == 0: strTrinary += "2"
+
+       elif lTrinary[l] == 2 and lPassword[l] == 1: strTrinary += "0"
+
+       elif lTrinary[l] == lPassword[l] == 2: strTrinary += "0"
+
+    return int(strTrinary[::-1], 3)
+
 if __name__ == "__main__":
-    if len(sys.argv) < 4: print("Usage\n\tEncryption: TrinaryCipher -e/-E Plaintext.file Ciphertext.file Password\n\tDecrytion: TrinaryCipher -d/-D Ciphertext.file Plaintext.file Password")
+    if len(sys.argv) < 5: Usage()
 
     elif sys.argv[1] == "-e" or sys.argv[1] == "-E":
-        strPassword, lData = sys.argv[4], []
+        strPassword, lPassword, lCiphertext = sys.argv[4], [], []
 
-        iLength, k = len(strPassword), 0
+        iPasswordLength, i = len(strPassword), 0
+
+        for j in range(iPasswordLength):
+            lPassword.append(Ternary(ord(strPassword[j])))
 
         with open(sys.argv[2], "br") as fdPlaintext:
-            bData = fdPlaintext.read()
+            bPlaintext = fdPlaintext.read()
 
             iFileSize = fdPlaintext.tell()
 
-        for i in range(iFileSize):
-            lTrinary, lPassword, strData = Ternary(bData[i], 3), Ternary(ord(strPassword[k]), 3), ""
+        for k in range(iFileSize):
+            lCiphertext.append(TernaryXor(Ternary(bPlaintext[k]), lPassword[i]))
 
-            for j in range(6):
-                if lTrinary[j] == lPassword[j] == 0: strData += "0"
-
-                elif lTrinary[j] == 0 and lPassword[j] == 1: strData += "2"
-
-                elif lTrinary[j] == 0 and lPassword[j] == 2: strData += "2"
-
-                elif lTrinary[j] == 1 and lPassword[j] == 0: strData += "1"
-
-                elif lTrinary[j] == lPassword[j] == 1: strData += "1"
-
-                elif lTrinary[j] == 1 and lPassword[j] == 2: strData += "1"
-
-                elif lTrinary[j] == 2 and lPassword[j] == 0: strData += "2"
-
-                elif lTrinary[j] == 2 and lPassword[j] == 1: strData += "0"
-
-                elif lTrinary[j] == lPassword[j] == 2: strData += "0"
-
-            lData.append(int(strData[::-1], 3))
-
-            k = (k + 1) % iLength
+            i = (i + 1) % iPasswordLength
 
         with open(sys.argv[3], "bw") as fdCiphertext:
-            for iData in lData:
-                fdCiphertext.write(iData.to_bytes(2, "little"))
+            for iCiphertext in lCiphertext:
+                fdCiphertext.write(iCiphertext.to_bytes(2, "little"))
 
     elif sys.argv[1] == "-d" or sys.argv[1] == "-D":
-        strPassword, lData = sys.argv[4], []
+        strPassword, lPassword, lPlaintext = sys.argv[4], [], []
 
-        iLength, k = len(strPassword), 0
+        iPasswordLength, i = len(strPassword), 0
+
+        for j in range(iPasswordLength):
+            lPassword.append(Ternary(ord(strPassword[j])))
 
         with open(sys.argv[2], "br") as fdCiphertext:
-            bData = fdCiphertext.read(2)
+            bCiphertext = fdCiphertext.read(2)
 
-            while bData:
-                lTrinary, lPassword, strData = Ternary(int.from_bytes(bData, "little"), 3), Ternary(ord(strPassword[k]), 3), ""
+            while bCiphertext:
+                lPlaintext.append(TernaryXor(Ternary(int.from_bytes(bCiphertext, "little")), lPassword[i]))
 
-                for j in range(6):
-                    if lTrinary[j] == lPassword[j] == 0: strData += "0"
+                i = (i + 1) % iPasswordLength
 
-                    elif lTrinary[j] == 0 and lPassword[j] == 1: strData += "2"
-
-                    elif lTrinary[j] == 0 and lPassword[j] == 2: strData += "2"
-
-                    elif lTrinary[j] == 1 and lPassword[j] == 0: strData += "1"
-
-                    elif lTrinary[j] == lPassword[j] == 1: strData += "1"
-
-                    elif lTrinary[j] == 1 and lPassword[j] == 2: strData += "1"
-
-                    elif lTrinary[j] == 2 and lPassword[j] == 0: strData += "2"
-
-                    elif lTrinary[j] == 2 and lPassword[j] == 1: strData += "0"
-
-                    elif lTrinary[j] == lPassword[j] == 2: strData += "0"
-
-                lData.append(int(strData[::-1], 3))
-
-                k = (k + 1) % iLength
-
-                bData = fdCiphertext.read(2)
+                bCiphertext = fdCiphertext.read(2)
 
         with open(sys.argv[3], "bw") as fdPlaintext:
-            for iData in lData:
-                fdPlaintext.write(iData.to_bytes(1, "little"))
+            for iPlaintext in lPlaintext:
+                fdPlaintext.write(iPlaintext.to_bytes(1, "little"))
 
-    else: print("Usage\n\tEncryption: TrinaryCipher -e/-E Plaintext.file Ciphertext.file Password\n\tDecrytion: TrinaryCipher -d/-D Ciphertext.file Plaintext.file Password")
+    else: Usage()

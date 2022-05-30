@@ -1,7 +1,7 @@
 /*******************************************************
-* ×÷Õß£ºÎéÒ«êÍ	           Author: YaoHui.Wu           *
-* ¿ªÔ´ÈÕÆÚ£º2022Äê5ÔÂ27ÈÕ  Open Source Date: 2022-5-27 *
-* ¹ú¼Ò£ºÖĞ¹ú               Country: China              *
+* ä½œè€…ï¼šä¼è€€æ™–	           Author: YaoHui.Wu           *
+* å¼€æºæ—¥æœŸï¼š2022å¹´5æœˆ27æ—¥  Open Source Date: 2022-5-27 *
+* å›½å®¶ï¼šä¸­å›½               Country: China              *
 *******************************************************/
 
 import java.io.*;
@@ -104,13 +104,15 @@ public class TrinaryCipher
 
                 rafCiphertext = new RandomAccessFile(args[2], "rw");
 
-                int iFileSize = (int)rafPlaintext.length();
+                long lFileSize = rafPlaintext.length();
 
-                rafCiphertext.setLength(2 * iFileSize);
+                rafCiphertext.setLength(2 * lFileSize);
 
                 byte[] baPlaintextOrCiphertext = new byte[6];
 
-                for(int j = 0, k = 0; j < iFileSize; ++j)
+                int k = 0;
+
+                for(long j = 0; j < lFileSize; ++j)
                 {
                     Ternary(rafPlaintext.readUnsignedByte(), baPlaintextOrCiphertext);
 
@@ -165,13 +167,15 @@ public class TrinaryCipher
 
                 rafPlaintext = new RandomAccessFile(args[2], "rw");
 
-                int iFileSize = (int)(rafCiphertext.length() / 2);
+                long lFileSize = rafCiphertext.length() / 2;
 
-                rafPlaintext.setLength(iFileSize);
+                rafPlaintext.setLength(lFileSize);
 
                 byte[] baCiphertextOrPlaintext = new byte[6];
 
-                for(int j = 0, k = 0; j < iFileSize; ++j)
+                int k = 0;
+
+                for(long j = 0; j < lFileSize; ++j)
                 {
                     Ternary(rafCiphertext.readUnsignedShort(), baCiphertextOrPlaintext);
 

@@ -1,7 +1,7 @@
 (*******************************************************
-* ◊˜’ﬂ£∫ŒÈ“´ÍÕ	           Author: YaoHui.Wu           *
-* ø™‘¥»’∆⁄£∫2022ƒÍ5‘¬27»’  Open Source Date: 2022-5-27 *
-* π˙º“£∫÷–π˙               Country: China              *
+* ‰ΩúËÄÖÔºö‰ºçËÄÄÊôñ	           Author: YaoHui.Wu           *
+* ÂºÄÊ∫êÊó•ÊúüÔºö2022Âπ¥5Êúà27Êó•  Open Source Date: 2022-5-27 *
+* ÂõΩÂÆ∂Ôºö‰∏≠ÂõΩ               Country: China              *
 *******************************************************)
 (* Compiled by free pascal. free pascal website: www.freepascal.org *)
 
@@ -100,9 +100,9 @@ Begin
 End;
 
 Var
-    bPasswordLength : Byte;
+    i, k, bPasswordLength : Byte;
 
-    i, j, k, iFileSize : LongWord;
+    j, uiFileSize : LongWord;
 
     baPassword : Array Of TrinaryArray;
 
@@ -134,19 +134,19 @@ Begin
 
         Reset(fdPlaintextOrCiphertext, 1);
 
-        iFileSize := FileSize(fdPlaintextOrCiphertext);
+        uiFileSize := FileSize(fdPlaintextOrCiphertext);
 
-        bpPlaintext := GetMem(iFileSize);
+        bpPlaintext := GetMem(uiFileSize);
 
-        BlockRead(fdPlaintextOrCiphertext, bpPlaintext^, iFileSize);
+        BlockRead(fdPlaintextOrCiphertext, bpPlaintext^, uiFileSize);
 
         Close(fdPlaintextOrCiphertext);
 
-        wpCiphertext := GetMem(2 * iFileSize);
+        wpCiphertext := GetMem(2 * uiFileSize);
 
         k := 0;
 
-        For j := 0 To iFileSize - 1 Do
+        For j := 0 To uiFileSize - 1 Do
         Begin
             Ternary(bpPlaintext[j], baCiphertext);
 
@@ -161,7 +161,7 @@ Begin
 
         Rewrite(fdPlaintextOrCiphertext, 1);
 
-        BlockWrite(fdPlaintextOrCiphertext, wpCiphertext^, 2 * iFileSize);
+        BlockWrite(fdPlaintextOrCiphertext, wpCiphertext^, 2 * uiFileSize);
 
         Close(fdPlaintextOrCiphertext);
 
@@ -184,21 +184,21 @@ Begin
 
         Reset(fdPlaintextOrCiphertext, 1);
 
-        iFileSize := FileSize(fdPlaintextOrCiphertext);
+        uiFileSize := FileSize(fdPlaintextOrCiphertext);
 
-        wpCiphertext := GetMem(iFileSize);
+        wpCiphertext := GetMem(uiFileSize);
 
-        BlockRead(fdPlaintextOrCiphertext, wpCiphertext^, iFileSize);
+        BlockRead(fdPlaintextOrCiphertext, wpCiphertext^, uiFileSize);
 
         Close(fdPlaintextOrCiphertext);
 
-        iFileSize := iFileSize Div 2;
+        uiFileSize := uiFileSize Div 2;
 
-        bpPlaintext := GetMem(iFileSize);
+        bpPlaintext := GetMem(uiFileSize);
 
         k := 0;
 
-        For j := 0 To iFileSize - 1 Do
+        For j := 0 To uiFileSize - 1 Do
         Begin
             Ternary(wpCiphertext[j], baCiphertext);
 
@@ -213,7 +213,7 @@ Begin
 
         Rewrite(fdPlaintextOrCiphertext, 1);
 
-        BlockWrite(fdPlaintextOrCiphertext, bpPlaintext^, iFileSize);
+        BlockWrite(fdPlaintextOrCiphertext, bpPlaintext^, uiFileSize);
 
         Close(fdPlaintextOrCiphertext);
 

@@ -10,7 +10,7 @@ public class TrinaryCipher
 {
     private static void Usage()
     {
-        System.out.println("Usage\n\tEncryption: java TrinaryCipher -e/-E Plaintext.file Ciphertext.file Password\n\tDecryption: java TrinaryCipher -d/-D Ciphertext.file Plaintext.file Password");
+        System.out.println("Usage\n\tEncryption: java TrinaryCipher -e/-E Plaintext.file Ciphertext.file Password\n\tDecryption: java TrinaryCipher -d/-D Ciphertext.file Plaintext.file Password\n");
     }
 
     private static void Ternary(int iNumeric,

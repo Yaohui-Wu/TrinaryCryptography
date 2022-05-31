@@ -1,7 +1,7 @@
 /*******************************************************
-* ×÷Õß£ºÎéÒ«êÍ	           Author: YaoHui.Wu           *
-* ¿ªÔ´ÈÕÆÚ£º2022Äê5ÔÂ27ÈÕ  Open Source Date: 2022-5-27 *
-* ¹ú¼Ò£ºÖĞ¹ú               Country: China              *
+* ä½œè€…ï¼šä¼è€€æ™–	           Author: YaoHui.Wu           *
+* å¼€æºæ—¥æœŸï¼š2022å¹´5æœˆ27æ—¥  Open Source Date: 2022-5-27 *
+* å›½å®¶ï¼šä¸­å›½               Country: China              *
 *******************************************************/
 
 #include <fcntl.h>
@@ -90,13 +90,13 @@ long long main(long long argc,
     }
     else if(*(short*)argv[1] == 0x452D || *(short*)argv[1] == 0x652D)
     {
-        long long lPasswordLength = -1;
+        unsigned char ucPasswordLength = -1;
 
-        while(argv[4][++lPasswordLength]);
+        while(argv[4][++ucPasswordLength]);
 
-        unsigned char *ucpPassword = malloc(6 * lPasswordLength);
+        unsigned char *ucpPassword = malloc(6 * ucPasswordLength);
 
-        for(long long i = 0; i < lPasswordLength; ++i)
+        for(unsigned char i = 0; i < ucPasswordLength; ++i)
         {
             Ternary(argv[4][i], ucpPassword + 6 * i);
         }
@@ -109,7 +109,7 @@ long long main(long long argc,
 
         int fdPlaintextOrCiphertext = open(argv[2], O_BINARY | O_RDONLY, S_IREAD | S_IWRITE);
 
-        unsigned char *ucpPlaintext = malloc(lFileSize), ucaCiphertext[6];
+        unsigned char *ucpPlaintext = malloc(lFileSize), ucaPlaintextOrCiphertext[6];
 
         read(fdPlaintextOrCiphertext, ucpPlaintext, lFileSize);
 
@@ -119,13 +119,13 @@ long long main(long long argc,
 
         for(long long j = 0, k = 0; j < lFileSize; ++j)
         {
-            Ternary(ucpPlaintext[j], ucaCiphertext);
+            Ternary(ucpPlaintext[j], ucaPlaintextOrCiphertext);
 
-            TernaryXor(ucaCiphertext, ucpPassword + 6 * k);
+            TernaryXor(ucaPlaintextOrCiphertext, ucpPassword + 6 * k);
 
-            uspCiphertext[j] = 243 * ucaCiphertext[0] + 81 * ucaCiphertext[1] + 27 * ucaCiphertext[2] + 9 * ucaCiphertext[3] + 3 * ucaCiphertext[4] + ucaCiphertext[5];
+            uspCiphertext[j] = 243 * ucaPlaintextOrCiphertext[0] + 81 * ucaPlaintextOrCiphertext[1] + 27 * ucaPlaintextOrCiphertext[2] + 9 * ucaPlaintextOrCiphertext[3] + 3 * ucaPlaintextOrCiphertext[4] + ucaPlaintextOrCiphertext[5];
 
-            k = ++k % lPasswordLength;
+            k = ++k % ucPasswordLength;
         }
 
         fdPlaintextOrCiphertext = open(argv[3], O_BINARY | O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);
@@ -140,13 +140,13 @@ long long main(long long argc,
     }
     else if(*(short*)argv[1] == 0x442D || *(short*)argv[1] == 0x642D)
     {
-        long long lPasswordLength = -1;
+        unsigned char ucPasswordLength = -1;
 
-        while(argv[4][++lPasswordLength]);
+        while(argv[4][++ucPasswordLength]);
 
-        unsigned char *ucpPassword = malloc(6 * lPasswordLength);
+        unsigned char *ucpPassword = malloc(6 * ucPasswordLength);
 
-        for(long long i = 0; i < lPasswordLength; ++i)
+        for(long long i = 0; i < ucPasswordLength; ++i)
         {
             Ternary(argv[4][i], ucpPassword + 6 * i);
         }
@@ -167,17 +167,17 @@ long long main(long long argc,
 
         lFileSize /= 2;
 
-        unsigned char *ucpPlaintext = malloc(lFileSize), ucaPlaintext[6];
+        unsigned char *ucpPlaintext = malloc(lFileSize), ucaCiphertextOrPlaintext[6];
 
         for(long long j = 0, k = 0; j < lFileSize; ++j)
         {
-            Ternary(uspCiphertext[j], ucaPlaintext);
+            Ternary(uspCiphertext[j], ucaCiphertextOrPlaintext);
 
-            TernaryXor(ucaPlaintext, ucpPassword + 6 * k);
+            TernaryXor(ucaCiphertextOrPlaintext, ucpPassword + 6 * k);
 
-            ucpPlaintext[j] = 243 * ucaPlaintext[0] + 81 * ucaPlaintext[1] + 27 * ucaPlaintext[2] + 9 * ucaPlaintext[3] + 3 * ucaPlaintext[4] + ucaPlaintext[5];
+            ucpPlaintext[j] = 243 * ucaCiphertextOrPlaintext[0] + 81 * ucaCiphertextOrPlaintext[1] + 27 * ucaCiphertextOrPlaintext[2] + 9 * ucaCiphertextOrPlaintext[3] + 3 * ucaCiphertextOrPlaintext[4] + ucaCiphertextOrPlaintext[5];
 
-            k = ++k % lPasswordLength;
+            k = ++k % ucPasswordLength;
         }
 
         fdCiphertextOrPlaintext = open(argv[3],  O_BINARY | O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);

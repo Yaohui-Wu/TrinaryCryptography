@@ -33,7 +33,7 @@ Begin
 
         baTrinary[4] := 0;
 
-        baTrinary[5] :=  0;
+        baTrinary[5] := 0;
     End
     Else
     Begin
@@ -106,7 +106,7 @@ Var
 
     baPassword : Array Of TrinaryArray;
 
-    baCiphertext : TrinaryArray;
+    baPlaintextOrCiphertext : TrinaryArray;
 
     fdPlaintextOrCiphertext : File;
 
@@ -148,11 +148,11 @@ Begin
 
         For j := 0 To uiFileSize - 1 Do
         Begin
-            Ternary(bpPlaintext[j], baCiphertext);
+            Ternary(bpPlaintext[j], baPlaintextOrCiphertext);
 
-            TernaryXor(baCiphertext, baPassword[k]);
+            TernaryXor(baPlaintextOrCiphertext, baPassword[k]);
 
-            wpCiphertext[j] := 243 * baCiphertext[0] + 81 * baCiphertext[1] + 27 * baCiphertext[2] + 9 * baCiphertext[3] + 3 * baCiphertext[4] + baCiphertext[5];
+            wpCiphertext[j] := 243 * baPlaintextOrCiphertext[0] + 81 * baPlaintextOrCiphertext[1] + 27 * baPlaintextOrCiphertext[2] + 9 * baPlaintextOrCiphertext[3] + 3 * baPlaintextOrCiphertext[4] + baPlaintextOrCiphertext[5];
 
             k := (k + 1) Mod bPasswordLength;
         End;
@@ -200,11 +200,11 @@ Begin
 
         For j := 0 To uiFileSize - 1 Do
         Begin
-            Ternary(wpCiphertext[j], baCiphertext);
+            Ternary(wpCiphertext[j], baPlaintextOrCiphertext);
 
-            TernaryXor(baCiphertext, baPassword[k]);
+            TernaryXor(baPlaintextOrCiphertext, baPassword[k]);
 
-            bpPlaintext[j] := 243 * baCiphertext[0] + 81 * baCiphertext[1] + 27 * baCiphertext[2] + 9 * baCiphertext[3] + 3 * baCiphertext[4] + baCiphertext[5];
+            bpPlaintext[j] := 243 * baPlaintextOrCiphertext[0] + 81 * baPlaintextOrCiphertext[1] + 27 * baPlaintextOrCiphertext[2] + 9 * baPlaintextOrCiphertext[3] + 3 * baPlaintextOrCiphertext[4] + baPlaintextOrCiphertext[5];
 
             k := (k + 1) Mod bPasswordLength;
         End;

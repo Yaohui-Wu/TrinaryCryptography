@@ -1,9 +1,9 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #*******************************************************
 # 作者：伍耀晖             Author: YaoHui.Wu           *
-# 开源日期：2022年5月27日  Open Source Date: 2022-5-27 *
+# 开源日期：2022年6月7日   Open Source Date: 2022-6-7  *
 # 国家：中国               Country: China              *
 #*******************************************************
 
@@ -25,17 +25,17 @@ def Ternary(iNumeric):
 
     return lTrinary
 
-# 0 ? 2    0 1 2
-# 1 1 1 or ? 1 ?
 # 2 ? 0    2 1 0
+# 1 1 1 or ? 1 ?
+# 0 ? 2    0 1 2
 
-def TernaryXor(lTrinary, lPassword):
+def TernaryXand(lTrinary, lPassword):
     for l in range(6):
-       if lTrinary[l] == lPassword[l] == 0: lTrinary[l] = "0"
+       if lTrinary[l] == lPassword[l] == 0: lTrinary[l] = "2"
 
-       elif lTrinary[l] == 0 and lPassword[l] == 1: lTrinary[l] = "2"
+       elif lTrinary[l] == 0 and lPassword[l] == 1: lTrinary[l] = "0"
 
-       elif lTrinary[l] == 0 and lPassword[l] == 2: lTrinary[l] = "2"
+       elif lTrinary[l] == 0 and lPassword[l] == 2: lTrinary[l] = "0"
 
        elif lTrinary[l] == 1 and lPassword[l] == 0: lTrinary[l] = "1"
 
@@ -43,11 +43,11 @@ def TernaryXor(lTrinary, lPassword):
 
        elif lTrinary[l] == 1 and lPassword[l] == 2: lTrinary[l] = "1"
 
-       elif lTrinary[l] == 2 and lPassword[l] == 0: lTrinary[l] = "2"
+       elif lTrinary[l] == 2 and lPassword[l] == 0: lTrinary[l] = "0"
 
-       elif lTrinary[l] == 2 and lPassword[l] == 1: lTrinary[l] = "0"
+       elif lTrinary[l] == 2 and lPassword[l] == 1: lTrinary[l] = "2"
 
-       elif lTrinary[l] == lPassword[l] == 2: lTrinary[l] = "0"
+       elif lTrinary[l] == lPassword[l] == 2: lTrinary[l] = "2"
 
     return int("".join(lTrinary[::-1]), 3)
 
@@ -68,7 +68,7 @@ if __name__ == "__main__":
             iFileSize = fdPlaintext.tell()
 
         for k in range(iFileSize):
-            lCiphertext.append(TernaryXor(Ternary(bPlaintext[k]), lPassword[i]))
+            lCiphertext.append(TernaryXand(Ternary(bPlaintext[k]), lPassword[i]))
 
             i = (i + 1) % iPasswordLength
 
@@ -88,7 +88,7 @@ if __name__ == "__main__":
             bCiphertext = fdCiphertext.read(2)
 
             while bCiphertext:
-                lPlaintext.append(TernaryXor(Ternary(int.from_bytes(bCiphertext, "little")), lPassword[i]))
+                lPlaintext.append(TernaryXand(Ternary(int.from_bytes(bCiphertext, "little")), lPassword[i]))
 
                 i = (i + 1) % iPasswordLength
 

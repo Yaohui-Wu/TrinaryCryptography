@@ -30,28 +30,26 @@ def Ternary(iNumeric):
 # 2 ? 0    2 1 0
 
 def TernaryXor(lTrinary, lPassword):
-    strTrinary = ""
-
     for l in range(6):
-       if lTrinary[l] == lPassword[l] == 0: strTrinary += "0"
+       if lTrinary[l] == lPassword[l] == 0: lTrinary[l] = "0"
 
-       elif lTrinary[l] == 0 and lPassword[l] == 1: strTrinary += "2"
+       elif lTrinary[l] == 0 and lPassword[l] == 1: lTrinary[l] = "2"
 
-       elif lTrinary[l] == 0 and lPassword[l] == 2: strTrinary += "2"
+       elif lTrinary[l] == 0 and lPassword[l] == 2: lTrinary[l] = "2"
 
-       elif lTrinary[l] == 1 and lPassword[l] == 0: strTrinary += "1"
+       elif lTrinary[l] == 1 and lPassword[l] == 0: lTrinary[l] = "1"
 
-       elif lTrinary[l] == lPassword[l] == 1: strTrinary += "1"
+       elif lTrinary[l] == lPassword[l] == 1: lTrinary[l] = "1"
 
-       elif lTrinary[l] == 1 and lPassword[l] == 2: strTrinary += "1"
+       elif lTrinary[l] == 1 and lPassword[l] == 2: lTrinary[l] = "1"
 
-       elif lTrinary[l] == 2 and lPassword[l] == 0: strTrinary += "2"
+       elif lTrinary[l] == 2 and lPassword[l] == 0: lTrinary[l] = "2"
 
-       elif lTrinary[l] == 2 and lPassword[l] == 1: strTrinary += "0"
+       elif lTrinary[l] == 2 and lPassword[l] == 1: lTrinary[l] = "0"
 
-       elif lTrinary[l] == lPassword[l] == 2: strTrinary += "0"
+       elif lTrinary[l] == lPassword[l] == 2: lTrinary[l] = "0"
 
-    return int(strTrinary[::-1], 3)
+    return int("".join(lTrinary[::-1]), 3)
 
 if __name__ == "__main__":
     if len(sys.argv) < 5: Usage()
